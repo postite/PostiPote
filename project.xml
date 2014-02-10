@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="AndroidShare" package="com.example.androidshare" version="1.0.0" company="Company Name" />
+	<app main="Main" path="Export" file="AndroidShare" />
+	
+	<source path="Source" />
+	<template
+  path="templates/AndroidManifest.xml"
+  rename="AndroidManifest.xml"
+  if="android"
+/>
+	<haxelib name="openfl" />
+	
+
+	<java path="javalib" if="android"></java>
+	<assets path="Assets" rename="assets" exclude="openfl.svg" />
+	<icon path="Assets/openfl.svg" />
+	
+</project>
