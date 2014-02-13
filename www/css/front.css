@@ -1,0 +1,10 @@
+.global {
+  margin: 0 auto;
+  width: 500px;
+}
+.postite {
+  width: 300px;
+}
+img {
+  max-width: 100%;
+}

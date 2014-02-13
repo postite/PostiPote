@@ -2,7 +2,7 @@
 <project>
 	
 	<meta title="AndroidShare" package="com.example.androidshare" version="1.0.0" company="Company Name" />
-	<app main="Main" path="Export" file="AndroidShare" />
+	<app main="Main" path="Export" file="AndroidShare" swf-version="11.3" />
 	
 	<source path="Source" />
 	<template
@@ -11,8 +11,12 @@
   if="android"
 />
 	<haxelib name="openfl" />
+	<haxelib name="mConsole" />
+	<haxelib name="msignal" />
 	
-
+	<haxedef name="network-sandbox" />
+	<haxedef name="dce" value="no" />
+	
 	<java path="javalib" if="android"></java>
 	<assets path="Assets" rename="assets" exclude="openfl.svg" />
 	<icon path="Assets/openfl.svg" />
