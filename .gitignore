@@ -1,3 +1,4 @@
 Export/*
 www/lib/*
 Assets/*
+cross/CrossConfig.hx

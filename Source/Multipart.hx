@@ -7,6 +7,7 @@ package;
 	import flash.utils.ByteArray;
 	import haxe.Http;
 	import haxe.io.Bytes;
+	
 
 	typedef MField={
 		name:String,
@@ -35,12 +36,13 @@ package;
 		private var _files:Array<MFile>;
 		private var _data:ByteArray;
 		public var request(get,null):URLRequest;
-		
+		public static var time:Timely;
 		public function  new(url:String = null) {
 			_url = url;
 			_fields= [];
 			_files= [];
 			_data=new ByteArray();
+			time= new Timely(true);
 		}
 		
 		public function addField(name:String, value:String):Void {
@@ -60,6 +62,9 @@ package;
 		public function get_request():URLRequest 
 		{
 			trace("request");
+			//time.begin();	
+			
+
 			var boundary: String = Std.string ((Math.round(Math.random()*100000000)));
 			
 			var n:Int;
@@ -87,23 +92,24 @@ package;
 			// Close
 			_writeString('--' + boundary + '--\r\n');
 			
-
+			
 
 			var r: URLRequest = new URLRequest(_url);
+
 			r.data = _data;
+
 			r.method = URLRequestMethod.POST;
+	
 			r.contentType = "multipart/form-data; boundary=" + boundary;
-			trace( "go request");
-			// var r:Http = new Http(_url);
-			// r.onData= function(r)trace("cool="+r);
-			// r.onError= function(r)trace("err="+r);
-			// r.setPostData("opppp" );
-			// r.setHeader( "Content-Type", "multipart/form-data; boundary=" + boundary );
+			//trace( time.end());
+			clear();	
+			trace("request build");
 			 return r;
 			
 		}
 		
 		private function _writeString(value:String):Void {
+			
 			var b:ByteArray = new ByteArray();
 			#if flash
 			b.writeMultiByte(value, "ascii");
@@ -111,13 +117,18 @@ package;
 			b.writeUTFBytes(value);
 			#end
 			_data.writeBytes(b, 0, b.length);
+
 		}
 		
 		private function _writeBytes(value:ByteArray):Void {
 			//_writeString("....FILE....");
+			
+			
 			value.position = 0;
 			_data.writeBytes(value, 0, value.length);
+
 		}
+
 
 		
 	}

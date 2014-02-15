@@ -10,6 +10,7 @@ import flash.net.URLLoader;
 import flash.geom.Matrix;
 import flash.display.Shape;
 import Note;
+
 #if android
 import openfl.utils.JNI;
 #end
@@ -173,7 +174,7 @@ class Main extends Sprite {
 		
 		MP.addField("etaoile","des neiges");
 		MP.addFile("file1",BA,"application/octet-stream",'postite_${Date.now()}.jpg');
-		
+		trace( "after fields");
 		//move that to Multipart
 		var loader:URLLoader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, onComplete);
@@ -184,10 +185,13 @@ class Main extends Sprite {
             loader.addEventListener(IOErrorEvent.IO_ERROR, err);
 			
 			try {
-				loader.load(MP.request);
+
+				trace( "go request");
+				haxe.Timer.delay(function()loader.load(MP.request),100);
 			} catch (error: Dynamic) {
 				trace( "Unable to load requested document : "+error.message);
 			}
+			/// there 's a freeze before requets returns
 		trace("request sent");
 	}
 	

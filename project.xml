@@ -11,11 +11,9 @@
   if="android"
 />
 	<haxelib name="openfl" />
-	<haxelib name="mConsole" />
 	<haxelib name="msignal" />
-	
 	<haxedef name="network-sandbox" />
-	<haxedef name="dce" value="no" />
+	
 	
 	<java path="javalib" if="android"></java>
 	<assets path="Assets" rename="assets" exclude="openfl.svg" />

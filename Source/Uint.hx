@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
+#if !display
 #if (flash9 || flash9doc || cs)
 /**
 	The unsigned Int type is only defined for Flash9 and C#. It's currently
@@ -232,4 +232,5 @@ abstract UInt(Int) from Int {
 	}
 
 }
+#end
 #end

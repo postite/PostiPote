@@ -75,6 +75,7 @@ class NoteBox extends Sprite{
 	function waiting(e)
 	{
 		this.rotation+=3;
+		//this.scaleX=Std.random(100)/100;
 	}
 	public function kill()
 	{
