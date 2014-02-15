@@ -2,7 +2,7 @@
 <project>
 	
 	<meta title="AndroidShare" package="com.example.androidshare" version="1.0.0" company="Company Name" />
-	<app main="Main" path="Export" file="AndroidShare" swf-version="11.3" />
+	<app main="Completion" path="Export" file="AndroidShare" swf-version="11.3" />
 	
 	<source path="Source" />
 	<template
@@ -12,7 +12,6 @@
 />
 	<haxelib name="openfl" />
 	<haxelib name="msignal" />
-	<haxelib name="polygonal-ds" />
 	<haxedef name="network-sandbox" />
 	
 	

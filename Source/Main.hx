@@ -17,6 +17,7 @@ import openfl.utils.JNI;
 //import openfl.Assets;
 import flash.display.Sprite;
 import flash.utils.ByteArray;
+
 import Multipart;
 
 class Main extends Sprite {
@@ -39,13 +40,13 @@ class Main extends Sprite {
 		trace( "hello");
 		ui();
 		
+		
 
 	}
 
 	function ui()
 	{
 		
-
 		var box=this.addChild(new Box());
 		box.y=this.stage.stageHeight - box.height;
 		box.x=this.stage.stageWidth/2 - box.width/2;

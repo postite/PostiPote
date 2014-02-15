@@ -8,14 +8,23 @@ import flash.display.DisplayObject;
 import flash.geom.Matrix;
 import msignal.Signal;
 import flash.display.PixelSnapping;
-
+import de.polygonal.ds.DLL;
+import de.polygonal.ds.DLLNode;
 enum Orientation{
 	Horizontal;
 	Vertical;
 	Square;
 }
+enum PlayMode{
+	Rotate;
+	Drag;
+	Scale;
+}
+
 class Playdoh extends Sprite
 {
+	var playMode:DLLNode<PlayMode>;
+
 	public var DONE:Signal1<Bitmap>;
 	var boite:Sprite;
 	var bitmap:flash.display.Bitmap;
@@ -23,23 +32,36 @@ class Playdoh extends Sprite
 	var mire:Shape;
 	var mouseDownref:MouseEvent->Void;
 	var rotator:Sprite;
+	var downCoords:{x:Float,y:Float, rotation:Float};
+	var zone:Zone;
+	var playModeList:DLL<PlayMode>;
+
+
+	var refDrag:MouseEvent->Void=null;
+			var ref:MouseEvent->Void;
+			var refStage:MouseEvent->Void=null;
+
 	function new(_bitmap:Bitmap)
 	{
 		trace( "new Playdoh");
 		super();
 		DONE= new Signal1();
-		
 		bitmap=_bitmap;
 
 
 		//listen
-		
+		this.playModeList= new DLL();
+		for ( mode in Type.allEnums(PlayMode))
+			playModeList.append(mode);
+		playModeList.close();
 		this.addEventListener(Event.ADDED_TO_STAGE,drawUI);
 		
 	}
 	function drawUI(e:Event)
 	{
 		trace( "ui");
+		
+
 		this.removeEventListener(Event.ADDED_TO_STAGE,drawUI);
 		boite= new Sprite();
 		trace( this);
@@ -56,12 +78,12 @@ class Playdoh extends Sprite
 		boite.addChildAt(rotator,0);
 		this.addChild(boite);
 
-		var dragger= new Sprite();
-		dragger.graphics.beginFill(0x000000,.2);
-		dragger.graphics.drawCircle(0,0,100);
-		dragger.x=mire.x+mire.width/2;
-		dragger.y=mire.y+mire.height/2;
-		boite.addChild(dragger);
+		this.playMode=playModeList.head;
+		zone= new Zone(playMode.val);
+		zone.x=mire.x+mire.width/2;
+		zone.y=mire.y+mire.height/2;
+
+		boite.addChild(zone);
 
 		
 		bitmap.smoothing = true; //smoothin' FTW !
@@ -75,27 +97,62 @@ class Playdoh extends Sprite
 		btn.y= mire.y+mire.height;
 		btn.addEventListener(MouseEvent.CLICK,finish);
 
-			var refDrag:MouseEvent->Void;
-			var ref:MouseEvent->Void;
-			var refStage:MouseEvent->Void=null;
-		dragger.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownref=function (e){
+		zone.doubleClickEnabled= true;
+		zone.addEventListener(MouseEvent.DOUBLE_CLICK,switchPlayMode);
+
+		switchPlayMode(null);
+		
+		
+		
+	}
+	public function switchPlayMode(?e:MouseEvent)
+	{
 			
-			dragger.addEventListener(MouseEvent.MOUSE_MOVE,ref=manipule);
+		playMode= playMode.next;
+		trace( "switchPlayMode"+playMode);
+		rotator.stopDrag();
+		if( mouseDownref!=null)rotator.removeEventListener( MouseEvent.MOUSE_DOWN,mouseDownref );
+		if( refDrag!=null)rotator.removeEventListener( MouseEvent.MOUSE_DOWN,refDrag );
+		switch (playMode.val) {
+			case PlayMode.Rotate :
+			rotator.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownref=function (e){
+			registerDownCoords(e,rotator);
+			rotator.addEventListener(MouseEvent.MOUSE_MOVE,ref=rotate);
 			stage.addEventListener(MouseEvent.MOUSE_UP,refStage=function(e){
-				dragger.removeEventListener(MouseEvent.MOUSE_MOVE,ref);
+				rotator.removeEventListener(MouseEvent.MOUSE_MOVE,ref);
 				if(refStage!=null)stage.removeEventListener(MouseEvent.MOUSE_UP,refStage);
 				});
 			});
-		rotator.addEventListener(MouseEvent.MOUSE_DOWN,refDrag=function(e){
+
+			case PlayMode.Scale :
+			rotator.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownref=function (e){
+			registerDownCoords(e,rotator);
+			rotator.addEventListener(MouseEvent.MOUSE_MOVE,ref=scaling);
+			stage.addEventListener(MouseEvent.MOUSE_UP,refStage=function(e){
+				rotator.removeEventListener(MouseEvent.MOUSE_MOVE,ref);
+				if(refStage!=null)stage.removeEventListener(MouseEvent.MOUSE_UP,refStage);
+				});
+			});
+			
+			case PlayMode.Drag :
+			rotator.addEventListener(MouseEvent.MOUSE_DOWN,refDrag=function(e){
+				trace(e.type);
+				registerDownCoords(e,rotator);
 				rotator.startDrag();
 				stage.addEventListener(MouseEvent.MOUSE_UP,refStage=function(e){
 				rotator.stopDrag();
 				if(refStage!=null)stage.removeEventListener(MouseEvent.MOUSE_UP,refStage);
 				});
 			});
-		
-	}
+			
 
+		}
+		zone.change(playMode.val);
+	}
+	public inline function registerDownCoords(e:MouseEvent,observed:DisplayObject)
+	{
+		this.downCoords={x:e.stageX,y:e.stageY,rotation:observed.rotation};
+	}
 	function drag(e:MouseEvent)
 	{
 		trace("drag" +(stage.stageWidth/2-e.stageX));
@@ -136,31 +193,56 @@ class Playdoh extends Sprite
 	}
 
 	///TODO
-	function manipule(e:MouseEvent)
+	inline function rotate(e:MouseEvent)
 	{
-	
-
-
-
+		trace("manipule" +downCoords.rotation);
 	//bitmap.x=e.stageX-(e.target.width/2);
 	//bitmap.y=e.stageY-(e.target.height/2);
 
-	//var distancex = e.stageX-stage.stageWidth/2;
-	//var distancey = e.stageY-stage.stageHeight/2;
-	var distancex=e.stageX-rotator.x;
-	var distancey= e.stageY-rotator.y;
-	rotator.rotation=Math.atan2(distancey,distancex)*180/Math.PI;
-	var hypothenuse=Math.sqrt(distancex*distancex+distancey*distancey);
-	//rotator.scaleX=rotator.scaleY=hypothenuse/100;
+	var distancex = e.stageX-stage.stageWidth/2;
+	var distancey = e.stageY-stage.stageHeight/2;
+
+	// var distancex=e.stageX-rotator.x;
+	// var distancey= e.stageY-rotator.y;
+
+	// var distancex=e.stageX-downCoords.x;
+	// var distancey=e.stageY-downCoords.y;
+
+	var angle= Math.atan2(distancey,distancex)*180/Math.PI;
+	trace( "angle="+angle);
+	rotator.rotation=downCoords.rotation + angle;
+	
 	//trace( "manipule" +bitmap.rotation);
 
 		
+	}
+	inline function scaling(e:MouseEvent)
+	{
+		trace("manipule" +downCoords.rotation);
+	//bitmap.x=e.stageX-(e.target.width/2);
+	//bitmap.y=e.stageY-(e.target.height/2);
+
+	var distancex = e.stageX-stage.stageWidth/2;
+	var distancey = e.stageY-stage.stageHeight/2;
+
+	// var distancex=e.stageX-rotator.x;
+	// var distancey= e.stageY-rotator.y;
+
+	// var distancex=e.stageX-downCoords.x;
+	// var distancey=e.stageY-downCoords.y;
+
+	//var angle= Math.atan2(distancey,distancex)*180/Math.PI;
+	
+	//rotator.rotation=downCoords.rotation + angle;
+	var hypothenuse=Math.sqrt(distancex*distancex+distancey*distancey);
+	rotator.scaleX=rotator.scaleY=hypothenuse/100;
 	}
 
 
 
 	function finish(e:MouseEvent)
 	{
+
 		e.target.removeEventListener(MouseEvent.CLICK,finish);
 		
 
@@ -209,5 +291,46 @@ class Playdoh extends Sprite
 		boite=null;
 		this.parent.removeChild(this);
 
+	}
+}
+
+class Zone extends Sprite
+{
+	public static var rayon:Int=20;
+	function new(mode:PlayMode)
+	{
+		super();
+		change(mode);
+	}
+	public function change(mode:PlayMode)
+	{
+		this.graphics.clear();
+		switch (mode) {
+			case Drag:
+			drawRect();
+			case Rotate:
+			drawCircle();
+			case Scale:
+			drawScale();
+		}
+	}
+	function drawCircle()
+	{
+		
+		this.graphics.beginFill(0x00AAFF,.4);
+		this.graphics.drawCircle(0,0,rayon);
+		
+	}
+	function drawRect()
+	{
+		this.graphics.beginFill(0x00AAFF,.4);
+		this.graphics.drawRect(-rayon,-rayon,rayon*2,rayon*2);
+		
+	}
+	function drawScale()
+	{
+		this.graphics.beginFill(0xcc3300,.4);
+		this.graphics.drawRect(-rayon,-rayon,rayon*2,rayon*2);
+		
 	}
 }
