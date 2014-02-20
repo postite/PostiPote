@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="AndroidShare" package="com.example.androidshare" version="1.0.0" company="Company Name" />
-	<app main="Main" path="Export" file="AndroidShare" swf-version="11.3" />
+	<meta title="Mob" package="com.postite.mob" version="1.0.0" company="postite.inc" />
+	<app main="com.postite.mob.App" path="Export" file="Mob" swf-version="11.3" />
 	
-	<source path="Source" />
+	<source path="MMVCBAZ" />
 	<template
   path="templates/AndroidManifest.xml"
   rename="AndroidManifest.xml"
@@ -13,6 +13,9 @@
 	<haxelib name="openfl" />
 	<haxelib name="msignal" />
 	<haxelib name="polygonal-ds" />
+	<haxelib name="tweenx" />
+	<haxelib name="postite" />
+	<haxelib name="mmvc" />
 	<haxedef name="network-sandbox" />
 	
 	

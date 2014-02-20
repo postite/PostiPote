@@ -135,7 +135,7 @@ class Playdoh extends Sprite
 			});
 			
 			case PlayMode.Drag :
-			rotator.addEventListener(MouseEvent.MOUSE_DOWN,refDrag=function(e){
+			rotator.addEventListener(MouseEvent.MOUSE_DOWN,mouseDownref=function(e){
 				trace(e.type);
 				registerDownCoords(e,rotator);
 				rotator.startDrag();
@@ -212,9 +212,7 @@ class Playdoh extends Sprite
 	trace( "angle="+angle);
 	rotator.rotation=downCoords.rotation + angle;
 	
-	//trace( "manipule" +bitmap.rotation);
-
-		
+	//trace( "manipule" +bitmap.rotation);	
 	}
 	inline function scaling(e:MouseEvent)
 	{
@@ -286,7 +284,8 @@ class Playdoh extends Sprite
 	function kill()
 	{
 		DONE= null;
-		boite.removeEventListener(MouseEvent.MOUSE_DOWN,mouseDownref);
+		if (mouseDownref!=null)
+		rotator.removeEventListener(MouseEvent.MOUSE_DOWN,mouseDownref);
 		mire=null;
 		boite=null;
 		this.parent.removeChild(this);

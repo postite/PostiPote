@@ -1,26 +1,26 @@
 package; 
-	
-	import flash.events.Event;
-	 import flash.net.URLLoader;
-	 import flash.net.URLRequest;
-	 import flash.net.URLRequestMethod;
-	import flash.utils.ByteArray;
-	import haxe.Http;
-	import haxe.io.Bytes;
-	
 
-	typedef MField={
-		name:String,
-		value:String
+import flash.events.Event;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.net.URLRequestMethod;
+import flash.utils.ByteArray;
+import haxe.Http;
+import haxe.io.Bytes;
+import postite.benchmark.Timely;
 
-	}
+typedef MField={
+	name:String,
+	value:String
 
-	typedef MFile={
-		name:String, 
-		byteArray:ByteArray,
-		 mimeType:String, 
-		 fileName:String
-	}
+}
+
+typedef MFile={
+	name:String, 
+	byteArray:ByteArray,
+	mimeType:String, 
+	fileName:String
+}
 	/**
 	 * 
 	 * Based on RFC 1867 + real case observation
@@ -30,38 +30,38 @@ package;
 	 * 
 	 */
 	 class Multipart 
-	{
-		private var _url:String;
-		private var _fields:Array<MField>;
-		private var _files:Array<MFile>;
-		private var _data:ByteArray;
-		public var request(get,null):URLRequest;
-		public static var time:Timely;
-		public function  new(url:String = null) {
-			_url = url;
-			_fields= [];
-			_files= [];
-			_data=new ByteArray();
-			time= new Timely(true);
-		}
-		
-		public function addField(name:String, value:String):Void {
-			_fields.push(cast {name:name, value:value});
-		}
-		
-		public function addFile(name:String, byteArray:ByteArray, mimeType:String, fileName:String):Void {
-			_files.push(cast {name:name, byteArray:byteArray, mimeType:mimeType, fileName:fileName});
-		}
-		
-		public function clear():Void {
-			_data = new ByteArray();
-			_fields = [];
-			_files = [];
-		}
-		
-		public function get_request():URLRequest 
-		{
-			trace("request");
+	 {
+	 	private var _url:String;
+	 	private var _fields:Array<MField>;
+	 	private var _files:Array<MFile>;
+	 	private var _data:ByteArray;
+	 	public var request(get,null):URLRequest;
+	 	public static var time:Timely;
+	 	public function  new(url:String = null) {
+	 		_url = url;
+	 		_fields= [];
+	 		_files= [];
+	 		_data=new ByteArray();
+	 		time= new Timely(true);
+	 	}
+
+	 	public function addField(name:String, value:String):Void {
+	 		_fields.push(cast {name:name, value:value});
+	 	}
+
+	 	public function addFile(name:String, byteArray:ByteArray, mimeType:String, fileName:String):Void {
+	 		_files.push(cast {name:name, byteArray:byteArray, mimeType:mimeType, fileName:fileName});
+	 	}
+
+	 	public function clear():Void {
+	 		_data = new ByteArray();
+	 		_fields = [];
+	 		_files = [];
+	 	}
+
+	 	public function get_request():URLRequest 
+	 	{
+	 		trace("request");
 			//time.begin();	
 			
 
@@ -99,12 +99,12 @@ package;
 			r.data = _data;
 
 			r.method = URLRequestMethod.POST;
-	
+
 			r.contentType = "multipart/form-data; boundary=" + boundary;
 			//trace( time.end());
 			clear();	
 			trace("request build");
-			 return r;
+			return r;
 			
 		}
 		

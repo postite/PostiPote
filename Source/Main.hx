@@ -9,7 +9,10 @@ import flash.events.MouseEvent;
 import flash.net.URLLoader;
 import flash.geom.Matrix;
 import flash.display.Shape;
+import tweenx909.TweenX;
+import tweenx909.EaseX;
 import Note;
+import msignal.Signal;
 
 #if android
 import openfl.utils.JNI;
@@ -28,18 +31,19 @@ class Main extends Sprite {
 	static var serverBase="http://postite.alwaysdata.net";
 	#end
 	static var upScript=serverBase+"/up/multi";
-
+	public static var step1:Signal1<State>= new Signal1();
 	static var note:Note;
 	static var bmp:BitmapData;
 	static var BA:ByteArray;
 	var preview:DisplayObject;
+	var state1:State1;
 
 	public function new () {
 		
 		super ();
 		trace( "hello");
 		ui();
-		
+		step1.add(switchState);
 		
 
 	}
@@ -61,10 +65,21 @@ class Main extends Sprite {
 		var uploadBtn= this.addChild(new Box(0x000000));
 		uploadBtn.addEventListener(MouseEvent.CLICK,upM);
 		uploadBtn.x=300;
+
+		state1= cast this.addChild(new State1());
+		state1.x=stage.stageWidth;
 		
 		
 	}
 
+
+	function switchState(state:State)
+	{
+		var time = new postite.benchmark.Timely();
+		time.begin();
+		TweenX.to(this,{x:-state.x}).time(1).ease(EaseX.bounceOut);
+		trace( time.end());
+	}
 	// function testJNI()
 	// {
 	// 	#if android
@@ -137,6 +152,7 @@ class Main extends Sprite {
 		bitmap.y=(this.stage.stageHeight-bitmap.height)/2;
 		// benchmark
 		haxe.Timer.measure(encodetest);
+		step1.dispatch(state1);
 
 	}
 
@@ -162,11 +178,8 @@ class Main extends Sprite {
 		
 		
 	}
-	// function playDoh(e:MouseEvent)
-	// {
-	// 	preview.x=e.stageX-(e.target.width/2);
-	// 	preview.y=e.stageY-(e.target.height/2);
-	// }
+	
+
 
 	function upM(?e:Event):Void
 	{
@@ -227,5 +240,11 @@ class Box extends Sprite{
 		this.graphics.beginFill(c);
 		this.graphics.drawRect(0,0,100,100);
 
+	}
+}
+
+class State extends Sprite{
+	function new(){
+		super();
 	}
 }

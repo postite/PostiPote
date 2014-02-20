@@ -31,6 +31,7 @@ class Up
 		currentVO.date= Date.now();
 		Web.parseMultipart( onInfo,onData);
 		trace( "insert vo");
+		Web.getPos
 		currentVO.insert();
 	}
 	private var currentVO:Postite;
@@ -91,7 +92,8 @@ class Up
         else
         {
         	trace( "isField");
-        	currentVO.titre=data.readString(pos, length);
+        	//currentVO.titre=data.readString(pos, length);
+        	Reflect.setProperty(currentVO,currentFieldName,data.readString(pos, length));
         	Sys.print("currentFieldName"+currentFieldName);
         	Sys.print("currentFieldvalue"+data.readString(pos, length));
         	//File.saveContent('$currentFieldName.txt',data.readString(pos, length));
