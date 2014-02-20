@@ -34,6 +34,7 @@ class Up
 		Web.getPos
 		currentVO.insert();
 	}
+	
 	private var currentVO:Postite;
 	private var currentFile : FileOutput;
     private var currentFileName : String;

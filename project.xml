@@ -4,7 +4,7 @@
 	<meta title="Mob" package="com.postite.mob" version="1.0.0" company="postite.inc" />
 	<app main="com.postite.mob.App" path="Export" file="Mob" swf-version="11.3" />
 	
-	<source path="MMVCBAZ" />
+	<source path="MMVC" />
 	<template
   path="templates/AndroidManifest.xml"
   rename="AndroidManifest.xml"

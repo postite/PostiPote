@@ -6,6 +6,7 @@ class State1 extends State {
 	public function new()
 	{
 		super();
+		
 		this.addEventListener(Event.ADDED_TO_STAGE,draw);
 	}
 
