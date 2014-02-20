@@ -1,4 +1,4 @@
-package server;
+package server.vo;
 import haxe.ds.StringMap;
 import sys.db.Types;
 //import ufront.db.Object;

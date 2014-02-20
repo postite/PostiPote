@@ -6,6 +6,7 @@ import haxe.web.Dispatch;
 import sys.io.File;
 import sys.io.FileOutput;
 import cross.CrossConfig.*;
+import vo.Postite;
 class Up
 {
 	public function new()

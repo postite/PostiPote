@@ -38,7 +38,7 @@ class Server
 	}
 	function doInstall()
 	{
-		sys.db.TableCreate.create(Postite.manager);
+		sys.db.TableCreate.create(vo.Postite.manager);
 	}
 
 	function connect()
